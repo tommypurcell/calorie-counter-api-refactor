@@ -1,15 +1,15 @@
 import { Router } from 'express'
 const router = Router()
+import db from '../db.js'
 
-router.get('/reviews', (req, res) => {
-  res.json([
-    { id: 1, rating: 5 },
-    { id: 2, rating: 3 }
-  ])
+router.get('/reviews', async (req, res) => {
+  let { rows } = await db.query('SELECT * FROM reviews')
+  res.json(rows)
 })
 
-router.get('/reviews/1', (req, res) => {
-  res.json({ id: 1, rating: 5 })
+router.get('/reviews/1', async (req, res) => {
+  let { rows } = await db.query('SELECT * FROM reviews')
+  res.json(rows[0])
 })
 
 export default router
