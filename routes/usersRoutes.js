@@ -1,15 +1,15 @@
 import { Router } from 'express'
 const router = Router()
+import db from '../db.js'
 
-router.get('/users', (req, res) => {
-  res.json([
-    { id: 1, firstName: 'Alice' },
-    { id: 2, firstName: 'Bob' }
-  ])
+router.get('/users', async (req, res) => {
+  let { rows } = await db.query('SELECT * FROM users')
+  res.json(rows)
 })
 
-router.get('/users/1', (req, res) => {
-  res.json({ id: 1, firstName: 'Alice' })
+router.get('/users/1', async (req, res) => {
+  let { rows } = await db.query('SELECT * FROM users WHERE user_id = 1')
+  res.json(rows[0])
 })
 
 export default router
