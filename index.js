@@ -2,8 +2,10 @@ import express from 'express'
 const app = express()
 
 import usersRoutes from './routes/usersRoutes.js'
+import housesRoutes from './routes/housesRoutes.js'
 
 app.use(usersRoutes)
+app.use(housesRoutes)
 
 app.listen(4100, () => {
   console.log('Airbnb API ready on localhost:4100')
