@@ -2,6 +2,20 @@ import { Router } from 'express'
 const router = Router()
 import db from '../db.js'
 
+router.post('/photos', async (req, res) => {
+  try {
+    let { house, photo } = req.body
+    let { rows } = await db.query(`
+      INSERT INTO houses_photos (house_id, photo)
+      VALUES ('${house}', '${photo}')
+      RETURNING *
+    `)
+    res.json(rows[0])
+  } catch (err) {
+    res.json({ error: err.message })
+  }
+})
+
 router.get('/photos', async (req, res) => {
   try {
     if (!req.query.house) {
