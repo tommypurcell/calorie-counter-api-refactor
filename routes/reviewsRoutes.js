@@ -4,7 +4,12 @@ import db from '../db.js'
 
 router.get('/reviews', async (req, res) => {
   try {
-    let { rows } = await db.query('SELECT * FROM reviews')
+    let sqlquery = 'SELECT * FROM reviews'
+    if (req.query.house) {
+      sqlquery += ` WHERE house_id = ${req.query.house}`
+    }
+    sqlquery += ' ORDER BY date DESC'
+    let { rows } = await db.query(sqlquery)
     res.json(rows)
   } catch (err) {
     res.json({ error: err.message })
