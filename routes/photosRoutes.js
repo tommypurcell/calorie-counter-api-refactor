@@ -4,8 +4,14 @@ import db from '../db.js'
 
 router.get('/photos', async (req, res) => {
   try {
-    let { rows } = await db.query('SELECT * FROM houses_photos')
-    res.json(rows)
+    if (!req.query.house) {
+      res.json({ error: 'house parameter is required' })
+    } else {
+      let { rows } = await db.query(
+        `SELECT * FROM houses_photos WHERE house_id = ${req.query.house}`
+      )
+      res.json(rows)
+    }
   } catch (err) {
     res.json({ error: err.message })
   }
