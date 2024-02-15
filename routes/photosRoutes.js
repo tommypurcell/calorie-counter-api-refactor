@@ -17,9 +17,11 @@ router.get('/photos', async (req, res) => {
   }
 })
 
-router.get('/photos/1', async (req, res) => {
+router.get('/photos/:photo_id', async (req, res) => {
   try {
-    let { rows } = await db.query('SELECT * FROM houses_photos')
+    let { rows } = await db.query(
+      `SELECT * FROM houses_photos WHERE id = ${req.params.photo_id}`
+    )
     res.json(rows[0])
   } catch (err) {
     res.json({ error: err.message })

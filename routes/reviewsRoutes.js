@@ -16,9 +16,11 @@ router.get('/reviews', async (req, res) => {
   }
 })
 
-router.get('/reviews/1', async (req, res) => {
+router.get('/reviews/:review_id', async (req, res) => {
   try {
-    let { rows } = await db.query('SELECT * FROM reviews')
+    let { rows } = await db.query(
+      `SELECT * FROM reviews WHERE review_id = ${req.params.review_id}`
+    )
     res.json(rows[0])
   } catch (err) {
     res.json({ error: err.message })

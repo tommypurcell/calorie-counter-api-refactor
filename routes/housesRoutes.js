@@ -44,9 +44,11 @@ router.get('/houses', async (req, res) => {
   }
 })
 
-router.get('/houses/1', async (req, res) => {
+router.get('/houses/:house_id', async (req, res) => {
   try {
-    let { rows } = await db.query('SELECT * FROM houses WHERE house_id = 1')
+    let { rows } = await db.query(
+      `SELECT * FROM houses WHERE house_id = ${req.params.house_id}`
+    )
     res.json(rows[0])
   } catch (err) {
     res.json({ error: err.message })

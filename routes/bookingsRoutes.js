@@ -16,9 +16,11 @@ router.get('/bookings', async (req, res) => {
   }
 })
 
-router.get('/bookings/1', async (req, res) => {
+router.get('/bookings/:booking_id', async (req, res) => {
   try {
-    let { rows } = await db.query('SELECT * FROM bookings WHERE booking_id = 1')
+    let { rows } = await db.query(
+      `SELECT * FROM bookings WHERE booking_id = ${req.params.booking_id}`
+    )
     res.json(rows[0])
   } catch (err) {
     res.json({ error: err.message })
