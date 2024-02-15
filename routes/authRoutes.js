@@ -2,15 +2,27 @@ import { Router } from 'express'
 const router = Router()
 
 router.get('/signup', (req, res) => {
-  res.send('Hello from Signup')
+  try {
+    res.send('Hello from Signup')
+  } catch (err) {
+    res.json({ error: err.message })
+  }
 })
 
 router.get('/login', (req, res) => {
-  res.send('Hello from Login')
+  try {
+    res.send('Hello from Login')
+  } catch (err) {
+    res.json({ error: err.message })
+  }
 })
 
 router.get('/logout', (req, res) => {
-  res.send('Hello from Logout')
+  try {
+    res.send('Hello from Logout')
+  } catch (err) {
+    res.json({ error: err.message })
+  }
 })
 
 export default router
