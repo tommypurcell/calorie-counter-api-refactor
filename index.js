@@ -8,6 +8,8 @@ import bookingsRoutes from './routes/bookingsRoutes.js'
 import photosRoutes from './routes/photosRoutes.js'
 import authRoutes from './routes/authRoutes.js'
 
+app.use(express.json())
+
 app.use(usersRoutes)
 app.use(housesRoutes)
 app.use(reviewsRoutes)
