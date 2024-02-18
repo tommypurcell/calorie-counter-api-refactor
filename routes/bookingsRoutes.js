@@ -49,4 +49,15 @@ router.get('/bookings/:booking_id', async (req, res) => {
   }
 })
 
+router.delete('/bookings/:booking_id', async (req, res) => {
+  try {
+    let { rows } = await db.query(
+      `DELETE FROM bookings WHERE booking_id = ${req.params.booking_id} RETURNING *`
+    )
+    res.json(rows[0])
+  } catch (err) {
+    res.json({ error: err.message })
+  }
+})
+
 export default router
