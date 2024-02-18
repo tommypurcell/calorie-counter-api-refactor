@@ -57,6 +57,9 @@ router.delete('/bookings/:booking_id', async (req, res) => {
     let { rows } = await db.query(
       `DELETE FROM bookings WHERE booking_id = ${req.params.booking_id} RETURNING *`
     )
+    if (!rows.length) {
+      throw new Error(`No booking found with id ${req.params.booking_id}`)
+    }
     res.json(rows[0])
   } catch (err) {
     res.json({ error: err.message })
