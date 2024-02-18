@@ -68,4 +68,15 @@ router.patch('/photos/:photo_id', async (req, res) => {
   }
 })
 
+router.delete('/photos/:photo_id', async (req, res) => {
+  try {
+    let { rows } = await db.query(
+      `DELETE FROM houses_photos WHERE id = ${req.params.photo_id} RETURNING *`
+    )
+    res.json(rows[0])
+  } catch (err) {
+    res.json({ error: err.message })
+  }
+})
+
 export default router
