@@ -8,6 +8,9 @@ import { jwtSecret } from '../secrets.js'
 router.post('/houses', async (req, res) => {
   try {
     const decodedToken = jwt.verify(req.cookies.jwt, jwtSecret)
+    if (!decodedToken) {
+      throw new Error('Invalid authentication token!')
+    }
     let { location, rooms, bathrooms, price, description, user_id } = req.body
     let { rows } = await db.query(`
       INSERT INTO houses (location, rooms, bathrooms, price, description, user_id)
