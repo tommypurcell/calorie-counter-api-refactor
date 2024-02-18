@@ -20,6 +20,7 @@ router.post('/signup', async (req, res) => {
       { user_id: user.user_id, email: user.email },
       jwtSecret
     )
+    res.cookie('jwt', token)
     res.json(rows[0])
   } catch (err) {
     res.json({ error: err.message })
@@ -45,6 +46,7 @@ router.post('/login', async (req, res) => {
           { user_id: user.user_id, email: user.email },
           jwtSecret
         )
+        res.cookie('jwt', token)
         res.send('Hello from Login')
       }
     }
