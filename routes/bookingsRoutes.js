@@ -43,6 +43,9 @@ router.get('/bookings/:booking_id', async (req, res) => {
     let { rows } = await db.query(
       `SELECT * FROM bookings WHERE booking_id = ${req.params.booking_id}`
     )
+    if (!rows.length) {
+      throw new Error(`No booking found with id ${req.params.user_id}`)
+    }
     res.json(rows[0])
   } catch (err) {
     res.json({ error: err.message })
