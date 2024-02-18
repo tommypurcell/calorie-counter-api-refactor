@@ -95,4 +95,15 @@ router.patch('/houses/:house_id', async (req, res) => {
   }
 })
 
+router.delete('/houses/:house_id', async (req, res) => {
+  try {
+    let { rows } = await db.query(
+      `DELETE FROM houses WHERE house_id = ${req.params.house_id} RETURNING *`
+    )
+    res.json(rows[0])
+  } catch (err) {
+    res.json({ error: err.message })
+  }
+})
+
 export default router
