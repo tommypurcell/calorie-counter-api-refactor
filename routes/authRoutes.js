@@ -2,6 +2,7 @@ import { Router } from 'express'
 const router = Router()
 import db from '../db.js'
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 
 import { jwtSecret } from '../secrets.js'
 
@@ -14,6 +15,11 @@ router.post('/signup', async (req, res) => {
       VALUES ('${req.body.first_name}', '${req.body.last_name}', '${req.body.email}', '${hashedPassword}', '${req.body.picture}')
       RETURNING *
     `)
+    const user = rows[0]
+    const token = jwt.sign(
+      { user_id: user.user_id, email: user.email },
+      jwtSecret
+    )
     res.json(rows[0])
   } catch (err) {
     res.json({ error: err.message })
@@ -35,6 +41,10 @@ router.post('/login', async (req, res) => {
         user.password
       )
       if (isPasswordValid) {
+        const token = jwt.sign(
+          { user_id: user.user_id, email: user.email },
+          jwtSecret
+        )
         res.send('Hello from Login')
       }
     }
