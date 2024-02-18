@@ -26,7 +26,16 @@ router.post('/login', async (req, res) => {
     if (!rows.length) {
       throw new Error('User not found!')
     }
+    const user = rows[0]
+    if (user) {
+      const isPasswordValid = await bcrypt.compare(
+        req.body.password,
+        user.password
+      )
+      if (isPasswordValid) {
         res.send('Hello from Login')
+      }
+    }
   } catch (err) {
     res.json({ error: err.message })
   }
