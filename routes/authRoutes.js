@@ -3,6 +3,8 @@ const router = Router()
 import db from '../db.js'
 import bcrypt from 'bcrypt'
 
+import { jwtSecret } from '../secrets.js'
+
 router.post('/signup', async (req, res) => {
   try {
     const salt = await bcrypt.genSalt(10)
