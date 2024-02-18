@@ -49,6 +49,9 @@ router.delete('/reviews/:review_id', async (req, res) => {
     let { rows } = await db.query(
       `DELETE FROM reviews WHERE review_id = ${req.params.review_id} RETURNING *`
     )
+    if (!rows.length) {
+      throw new Error(`No reviews found with id ${req.params.review_id}`)
+    }
     res.json(rows[0])
   } catch (err) {
     res.json({ error: err.message })
