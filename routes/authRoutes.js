@@ -15,7 +15,7 @@ router.post('/signup', async (req, res) => {
   }
 })
 
-router.get('/login', (req, res) => {
+router.post('/login', async (req, res) => {
   try {
     res.send('Hello from Login')
   } catch (err) {
