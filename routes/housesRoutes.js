@@ -85,6 +85,12 @@ router.patch('/houses/:house_id', async (req, res) => {
     if (!decodedToken) {
       throw new Error('Invalid authentication token')
     }
+    const house = await db.query(`
+      SELECT * FROM houses WHERE house_id = ${req.params.house_id}
+    `)
+    if (house.rows[0].user_id !== decodedToken.user_id) {
+      throw new Error('You are not authorized to edit this house')
+    }
     let { location, rooms, bathrooms, price, description, user_id } = req.body
     // Start building the SQL query
     let sqlquery = `UPDATE houses `
