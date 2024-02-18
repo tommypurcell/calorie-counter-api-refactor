@@ -63,6 +63,9 @@ router.get('/houses/:house_id', async (req, res) => {
     let { rows } = await db.query(
       `SELECT * FROM houses WHERE house_id = ${req.params.house_id}`
     )
+    if (!rows.length) {
+      throw new Error(`No house found with id ${req.params.user_id}`)
+    }
     res.json(rows[0])
   } catch (err) {
     res.json({ error: err.message })
