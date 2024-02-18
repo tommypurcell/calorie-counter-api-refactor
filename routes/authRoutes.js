@@ -17,7 +17,13 @@ router.post('/signup', async (req, res) => {
 
 router.post('/login', async (req, res) => {
   try {
-    res.send('Hello from Login')
+    const { rows } = await db.query(`
+      SELECT * FROM users WHERE email = '${req.body.email}'
+    `)
+    if (!rows.length) {
+      throw new Error('User not found!')
+    }
+        res.send('Hello from Login')
   } catch (err) {
     res.json({ error: err.message })
   }
