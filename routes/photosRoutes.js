@@ -4,10 +4,19 @@ import db from '../db.js'
 
 router.post('/photos', async (req, res) => {
   try {
-    let { house, photo } = req.body
+    const decodedToken = jwt.verify(req.cookies.jwt, jwtSecret)
+    if (!decodedToken) {
+      throw new Error('Invalid authentication token')
+    }
+    const house = await db.query(`
+      SELECT * FROM houses WHERE house_id = ${req.body.house}
+    `)
+    if (house.rows[0].user_id !== decodedToken.user_id) {
+      throw new Error('You are not authorized to add photos for this house')
+    }
     let { rows } = await db.query(`
       INSERT INTO houses_photos (house_id, photo)
-      VALUES ('${house}', '${photo}')
+      VALUES ('${req.body.house}', '${req.body.photo}')
       RETURNING *
     `)
     res.json(rows[0])
