@@ -22,6 +22,9 @@ router.get('/photos/:photo_id', async (req, res) => {
     let { rows } = await db.query(
       `SELECT * FROM houses_photos WHERE id = ${req.params.photo_id}`
     )
+    if (!rows.length) {
+      throw new Error(`No photo found with id ${req.params.user_id}`)
+    }
     res.json(rows[0])
   } catch (err) {
     res.json({ error: err.message })
