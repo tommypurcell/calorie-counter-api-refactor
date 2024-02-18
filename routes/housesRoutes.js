@@ -81,6 +81,10 @@ router.get('/houses/:house_id', async (req, res) => {
 
 router.patch('/houses/:house_id', async (req, res) => {
   try {
+    const decodedToken = jwt.verify(req.cookies.jwt, jwtSecret)
+    if (!decodedToken) {
+      throw new Error('Invalid authentication token')
+    }
     let { location, rooms, bathrooms, price, description, user_id } = req.body
     // Start building the SQL query
     let sqlquery = `UPDATE houses `
