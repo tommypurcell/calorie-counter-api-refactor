@@ -3,14 +3,6 @@ const router = Router()
 import db from '../db.js'
 import jwt from 'jsonwebtoken'
 
-router.get('/users', async (req, res) => {
-  try {
-    let { rows } = await db.query('SELECT * FROM users')
-    res.json(rows)
-  } catch (err) {
-    res.json({ error: err.message })
-  }
-})
 import { jwtSecret } from '../secrets.js'
 
 router.get('/users/:user_id', async (req, res) => {
