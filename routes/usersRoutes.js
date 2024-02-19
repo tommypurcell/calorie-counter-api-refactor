@@ -36,6 +36,13 @@ router.get('/users/:user_id', async (req, res) => {
 
 router.patch('/users/:user_id', async (req, res) => {
   try {
+    const decodedToken = jwt.verify(req.cookies.jwt, jwtSecret)
+    if (!decodedToken) {
+      throw new Error('Invalid authentication token!')
+    }
+    if (decodedToken.user_id !== parseInt(req.params.user_id)) {
+      throw new Error('You are not authorized to update this user!')
+    }
     let { first_name, last_name, email, password, picture } = req.body
     // Start building the SQL query
     let sqlquery = `UPDATE users `
