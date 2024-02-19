@@ -1,6 +1,7 @@
 import { Router } from 'express'
 const router = Router()
 import db from '../db.js'
+import jwt from 'jsonwebtoken'
 
 router.get('/users', async (req, res) => {
   try {
@@ -10,9 +11,17 @@ router.get('/users', async (req, res) => {
     res.json({ error: err.message })
   }
 })
+import { jwtSecret } from '../secrets.js'
 
 router.get('/users/:user_id', async (req, res) => {
   try {
+    const decodedToken = jwt.verify(req.cookies.jwt, jwtSecret)
+    if (!decodedToken) {
+      throw new Error('Invalid authentication token!')
+    }
+    if (decodedToken.user_id !== parseInt(req.params.user_id)) {
+      throw new Error('You are not authorized to view this user!')
+    }
     let { rows } = await db.query(
       `SELECT * FROM users WHERE user_id = ${req.params.user_id}`
     )
