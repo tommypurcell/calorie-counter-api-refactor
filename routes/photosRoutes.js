@@ -64,7 +64,7 @@ router.patch('/photos/:photo_id', async (req, res) => {
       SELECT * FROM photos WHERE id = ${req.params.photo_id}
       LEFT JOIN houses ON houses.house_id = photos.house_id
     `)
-    if (photosRows.rows[0].house_id !== decodedToken.user_id) {
+    if (photosRows.rows[0].user_id !== decodedToken.user_id) {
       throw new Error('You are not authorized to updated photos for this house')
     }
     let { house_id, photo, featured } = req.body
