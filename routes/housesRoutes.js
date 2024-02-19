@@ -91,7 +91,7 @@ router.patch('/houses/:house_id', async (req, res) => {
     if (house.rows[0].user_id !== decodedToken.user_id) {
       throw new Error('You are not authorized to edit this house')
     }
-    let { location, rooms, bathrooms, price, description, user_id } = req.body
+    let { location, rooms, bathrooms, price, description } = req.body
     // Start building the SQL query
     let sqlquery = `UPDATE houses `
     // Add SET if the req.body object is not empty
