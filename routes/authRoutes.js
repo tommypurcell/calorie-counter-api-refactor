@@ -8,6 +8,12 @@ import { jwtSecret } from '../secrets.js'
 
 router.post('/signup', async (req, res) => {
   try {
+    const { rowsSelect } = await db.query(`
+      SELECT * FROM users WHERE email = '${req.body.email}'
+    `)
+    if (rowsSelect.length) {
+      throw new Error('User with this email already exists!')
+    }
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(req.body.password, salt)
     const { rows } = await db.query(`
