@@ -40,9 +40,16 @@ router.get('/bookings', async (req, res) => {
 
 router.get('/bookings/:booking_id', async (req, res) => {
   try {
+    const decodedToken = jwt.verify(req.cookies.jwt, jwtSecret)
+    if (!decodedToken) {
+      throw new Error('Invalid authentication token!')
+    }
     let { rows } = await db.query(
       `SELECT * FROM bookings WHERE booking_id = ${req.params.booking_id}`
     )
+    if (rows[0].user_id !== decodedToken.user_id) {
+      throw new Error('You are not authorized to see this booking!')
+    }
     if (!rows.length) {
       throw new Error(`No booking found with id ${req.params.user_id}`)
     }
