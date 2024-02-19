@@ -26,11 +26,11 @@ router.post('/bookings', async (req, res) => {
 
 router.get('/bookings', async (req, res) => {
   try {
-    let sqlquery = 'SELECT * FROM bookings'
-    if (req.query.user) {
-      sqlquery += ` WHERE user_id = ${req.query.user}`
+    const decodedToken = jwt.verify(req.cookies.jwt, jwtSecret)
+    if (!decodedToken) {
+      throw new Error('Invalid authentication token!')
     }
-    sqlquery += ' ORDER BY from_date DESC'
+    let sqlquery = `SELECT * FROM bookings WHERE user_id = ${decodedToken.user_id} ORDER BY from_date DESC`
     let { rows } = await db.query(sqlquery)
     res.json(rows)
   } catch (err) {
