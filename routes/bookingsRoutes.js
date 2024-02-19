@@ -1,21 +1,21 @@
 import { Router } from 'express'
 const router = Router()
 import db from '../db.js'
+import jwt from 'jsonwebtoken'
+
+import { jwtSecret } from '../secrets.js'
 
 router.post('/bookings', async (req, res) => {
   try {
-    let {
-      house_id,
-      user_id,
-      from_date,
-      to_date,
-      message,
-      price_night,
-      price_total
-    } = req.body
+    const decodedToken = jwt.verify(req.cookies.jwt, jwtSecret)
+    if (!decodedToken) {
+      throw new Error('Invalid authentication token!')
+    }
+    let { house_id, from_date, to_date, message, price_night, price_total } =
+      req.body
     let { rows } = await db.query(`
       INSERT INTO bookings (house_id, user_id, from_date, to_date, message, price_night, price_total)
-      VALUES ('${house_id}', '${user_id}', '${from_date}', '${to_date}', '${message}', ${price_night}, '${price_total}')
+      VALUES ('${house_id}', '${decodedToken.user_id}', '${from_date}', '${to_date}', '${message}', ${price_night}, '${price_total}')
       RETURNING *
     `)
     res.json(rows[0])
