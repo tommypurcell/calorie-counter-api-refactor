@@ -1,5 +1,6 @@
 import express from 'express'
 import cookieParser from 'cookie-parser'
+import cors from 'cors'
 const app = express()
 
 import usersRoutes from './routes/usersRoutes.js'
@@ -11,6 +12,7 @@ import authRoutes from './routes/authRoutes.js'
 
 app.use(express.json())
 app.use(cookieParser())
+app.use(cors())
 
 app.use(usersRoutes)
 app.use(housesRoutes)
