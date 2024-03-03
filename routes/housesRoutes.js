@@ -28,6 +28,8 @@ router.get('/houses', async (req, res) => {
     // build query base
     let sqlquery = 'SELECT * FROM houses'
     let filters = []
+    // add photos
+    sqlquery += ` LEFT JOIN houses_photos ON houses.house_id = houses_photos.house_id `
     // add WHERE
     if (
       req.query.location ||
