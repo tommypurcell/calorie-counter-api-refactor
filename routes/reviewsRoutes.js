@@ -18,13 +18,27 @@ router.post('/reviews', async (req, res) => {
 
 router.get('/reviews', async (req, res) => {
   try {
-    let sqlquery = 'SELECT * FROM reviews'
+    let sqlquery = `
+      SELECT reviews.*, users.first_name, users.last_name, users.picture FROM reviews
+      LEFT JOIN users ON users.user_id = reviews.user_id
+    `
     if (req.query.house) {
       sqlquery += ` WHERE house_id = ${req.query.house}`
     }
     sqlquery += ' ORDER BY date DESC'
     let { rows } = await db.query(sqlquery)
-    res.json(rows)
+    let reviews = rows.map((r) => {
+      r.author = {
+        firstName: r.first_name,
+        lastName: r.last_name,
+        picture: r.picture
+      }
+      delete r.first_name
+      delete r.last_name
+      delete r.picture
+      return r
+    })
+    res.json(reviews)
   } catch (err) {
     res.json({ error: err.message })
   }
