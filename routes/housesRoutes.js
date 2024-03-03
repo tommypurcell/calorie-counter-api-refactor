@@ -75,7 +75,24 @@ router.get('/houses/:house_id', async (req, res) => {
     if (!rows.length) {
       throw new Error(`No house found with id ${req.params.user_id}`)
     }
-    res.json(rows[0])
+    let house = rows[0]
+    // join user
+    let { rows: hostRows } = await db.query(
+      `SELECT user_id, picture, first_name, last_name FROM users WHERE user_id = ${house.user_id}`
+    )
+    house.host = {
+      user_id: hostRows[0].user_id,
+      picture: hostRows[0].picture,
+      firstName: hostRows[0].first_name,
+      lastName: hostRows[0].last_name
+    }
+    // join photos
+    let { rows: photosRows } = await db.query(
+      `SELECT * FROM houses_photos WHERE house_id = ${house.house_id}`
+    )
+    house.images = photosRows.map((p) => p.photo)
+    delete house.user_id
+    res.json(house)
   } catch (err) {
     res.json({ error: err.message })
   }
