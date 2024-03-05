@@ -26,7 +26,8 @@ router.post('/houses', async (req, res) => {
 router.get('/houses', async (req, res) => {
   try {
     // build query base
-    let sqlquery = 'SELECT * FROM houses'
+    let sqlquery =
+      'SELECT DISTINCT ON (houses.house_id) houses.*, houses_photos.photo FROM houses'
     let filters = []
     // add photos
     sqlquery += ` LEFT JOIN houses_photos ON houses.house_id = houses_photos.house_id `
