@@ -143,14 +143,20 @@ router.get('/houses/:house_id', async (req, res) => {
 
 router.patch('/houses/:house_id', async (req, res) => {
   try {
+    // Validate Token
     const decodedToken = jwt.verify(req.cookies.jwt, jwtSecret)
-    if (!decodedToken) {
+    if (!decodedToken || !decodedToken.user_id || !decodedToken.email) {
       throw new Error('Invalid authentication token')
     }
-    const house = await db.query(`
+    // Find house
+    const { rows: housesRows } = await db.query(`
       SELECT * FROM houses WHERE house_id = ${req.params.house_id}
     `)
-    if (house.rows[0].user_id !== decodedToken.user_id) {
+    if (!housesRows.length) {
+      throw new Error(`house with id ${req.params.house_id} not found`)
+    }
+    // Validate house owner
+    if (housesRows[0].user_id !== decodedToken.user_id) {
       throw new Error('You are not authorized to edit this house')
     }
     let { location, rooms, bathrooms, price, description } = req.body
@@ -162,7 +168,15 @@ router.patch('/houses/:house_id', async (req, res) => {
     }
     // Iterate over the keys of the req.body object and add each key-value pair to the SQL query
     for (let key in req.body) {
-      sqlquery += `${key} = '${req.body[key]}', `
+      if (
+        key === 'location' ||
+        key === 'rooms' ||
+        key === 'bathrooms' ||
+        key === 'price' ||
+        key === 'description'
+      ) {
+        sqlquery += `${key} = '${req.body[key]}', `
+      }
     }
     // Remove the trailing comma and space from the SQL query
     sqlquery = sqlquery.slice(0, -2)
@@ -170,8 +184,33 @@ router.patch('/houses/:house_id', async (req, res) => {
     sqlquery += ` WHERE house_id = ${req.params.house_id} RETURNING *`
     // Execute the SQL query
     let { rows } = await db.query(sqlquery)
+    let house = rows[0]
+    // Update photos
+    if (req.body.photos && req.body.photos.length) {
+      let { rows: photosRows } = await db.query(
+        `SELECT * FROM houses_photos WHERE house_id = ${req.params.house_id}`
+      )
+      photosRows = photosRows.map((p, i) => {
+        if (req.body.photos[i]) {
+          p.photo = req.body.photos[i]
+        }
+        return p
+      })
+      let photosQuery = 'UPDATE houses_photos SET photo = (case '
+      photosRows.forEach((p, i) => {
+        photosQuery += `when id = ${p.id} then '${p.photo}' `
+      })
+      photosQuery += 'end) WHERE id in ('
+      photosRows.forEach((p, i) => {
+        photosQuery += `${p.id}, `
+      })
+      photosQuery = photosQuery.slice(0, -2)
+      photosQuery += ') RETURNING *'
+      const { rows: updatedPhotos } = await db.query(photosQuery)
+      house.photos = updatedPhotos.map((p) => p.photo)
+    }
     // Send the response
-    res.json(rows[0])
+    res.json(house)
   } catch (err) {
     res.json({ error: err.message })
   }
