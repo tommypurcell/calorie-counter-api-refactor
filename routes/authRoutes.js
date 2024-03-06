@@ -62,27 +62,37 @@ router.post('/signup', async (req, res) => {
 
 router.post('/login', async (req, res) => {
   try {
+    // Required fields
+    if (!req.body.email) {
+      throw new Error('email is required')
+    }
+    if (!req.body.password) {
+      throw new Error('password is required')
+    }
+    // Find user
     const { rows } = await db.query(`
       SELECT * FROM users WHERE email = '${req.body.email}'
     `)
     if (!rows.length) {
-      throw new Error('User not found!')
+      throw new Error('Either your email or your password is incorrect')
     }
     const user = rows[0]
-    if (user) {
-      const isPasswordValid = await bcrypt.compare(
-        req.body.password,
-        user.password
-      )
-      if (isPasswordValid) {
-        const token = jwt.sign(
-          { user_id: user.user_id, email: user.email },
-          jwtSecret
-        )
-        res.cookie('jwt', token)
-        res.send('Hello from Login')
-      }
+    // Validate password
+    const isPasswordValid = await bcrypt.compare(
+      req.body.password,
+      user.password
+    )
+    if (!isPasswordValid) {
+      throw new Error('Either your email or your password is incorrect')
     }
+    const token = jwt.sign(
+      { user_id: user.user_id, email: user.email },
+      jwtSecret
+    )
+    // Compose response
+    res.cookie('jwt', token)
+    // Respond
+    res.json({ message: 'You are logged in' })
   } catch (err) {
     res.json({ error: err.message })
   }
