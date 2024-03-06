@@ -1,16 +1,47 @@
 import { Router } from 'express'
 const router = Router()
 import db from '../db.js'
+import jwt from 'jsonwebtoken'
+
+import { jwtSecret } from '../secrets.js'
 
 router.post('/reviews', async (req, res) => {
   try {
-    let { house_id, user_id, date, comment, rating } = req.body
+    // Validate Token
+    const decodedToken = jwt.verify(req.cookies.jwt, jwtSecret)
+    if (!decodedToken || !decodedToken.user_id || !decodedToken.email) {
+      throw new Error('Invalid authentication token')
+    }
+    // Validate fields
+    let { house_id, content, rating } = req.body
+    if (!house_id || !content || !rating) {
+      throw new Error('house_id, content, and rating are required')
+    }
+    // Validate rating
+    if (rating < 0 || rating > 5) {
+      throw new Error('rating must be between 0 and 5')
+    }
+    // Get current date
+    let date = new Date()
+    date = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate()
     let { rows } = await db.query(`
-      INSERT INTO reviews (house_id, user_id, date, comment, rating)
-      VALUES ('${house_id}', '${user_id}', '${date}', '${comment}', '${rating}')
+      INSERT INTO reviews (house_id, user_id, date, content, rating)
+      VALUES (${house_id}, ${decodedToken.user_id}, '${date}', '${content}', ${rating})
       RETURNING *
     `)
-    res.json(rows[0])
+    let review = rows[0]
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    })
+    const formatted = formatter.format(new Date(review.date))
+    review.date = formatted
+    res.json(review)
+    // Update house
+    let houseUpdated = await db.query(
+      `UPDATE houses SET reviews = reviews + 1, rating = ((rating + ${rating}) / (reviews + 1)) WHERE house_id = ${house_id} RETURNING *`
+    )
   } catch (err) {
     res.json({ error: err.message })
   }
