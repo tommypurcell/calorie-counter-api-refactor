@@ -1,6 +1,6 @@
 import pg from 'pg'
 const { Pool } = pg
-import { DBURL } from './secrets.js'
+const DBURL = process.env.DBURL
 
 // Database connection parameters
 const db = new Pool({
