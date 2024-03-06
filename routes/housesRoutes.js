@@ -216,28 +216,29 @@ router.patch('/houses/:house_id', async (req, res) => {
   }
 })
 
-router.delete('/houses/:house_id', async (req, res) => {
-  try {
-    const decodedToken = jwt.verify(req.cookies.jwt, jwtSecret)
-    if (!decodedToken) {
-      throw new Error('Invalid authentication token')
-    }
-    const house = await db.query(`
-      SELECT * FROM houses WHERE house_id = ${req.params.house_id}
-    `)
-    if (house.rows[0].user_id !== decodedToken.user_id) {
-      throw new Error('You are not authorized to delete this house')
-    }
-    let { rows } = await db.query(
-      `DELETE FROM houses WHERE house_id = ${req.params.house_id} RETURNING *`
-    )
-    if (!rows.length) {
-      throw new Error(`No house found with id ${req.params.house_id}`)
-    }
-    res.json(rows[0])
-  } catch (err) {
-    res.json({ error: err.message })
-  }
-})
+// Route not in use
+// router.delete('/houses/:house_id', async (req, res) => {
+//   try {
+//     const decodedToken = jwt.verify(req.cookies.jwt, jwtSecret)
+//     if (!decodedToken) {
+//       throw new Error('Invalid authentication token')
+//     }
+//     const house = await db.query(`
+//       SELECT * FROM houses WHERE house_id = ${req.params.house_id}
+//     `)
+//     if (house.rows[0].user_id !== decodedToken.user_id) {
+//       throw new Error('You are not authorized to delete this house')
+//     }
+//     let { rows } = await db.query(
+//       `DELETE FROM houses WHERE house_id = ${req.params.house_id} RETURNING *`
+//     )
+//     if (!rows.length) {
+//       throw new Error(`No house found with id ${req.params.house_id}`)
+//     }
+//     res.json(rows[0])
+//   } catch (err) {
+//     res.json({ error: err.message })
+//   }
+// })
 
 export default router

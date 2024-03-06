@@ -44,32 +44,34 @@ router.get('/reviews', async (req, res) => {
   }
 })
 
-router.get('/reviews/:review_id', async (req, res) => {
-  try {
-    let { rows } = await db.query(
-      `SELECT * FROM reviews WHERE review_id = ${req.params.review_id}`
-    )
-    if (!rows.length) {
-      throw new Error(`No review found with id ${req.params.user_id}`)
-    }
-    res.json(rows[0])
-  } catch (err) {
-    res.json({ error: err.message })
-  }
-})
+// Route not in use
+// router.get('/reviews/:review_id', async (req, res) => {
+//   try {
+//     let { rows } = await db.query(
+//       `SELECT * FROM reviews WHERE review_id = ${req.params.review_id}`
+//     )
+//     if (!rows.length) {
+//       throw new Error(`No review found with id ${req.params.user_id}`)
+//     }
+//     res.json(rows[0])
+//   } catch (err) {
+//     res.json({ error: err.message })
+//   }
+// })
 
-router.delete('/reviews/:review_id', async (req, res) => {
-  try {
-    let { rows } = await db.query(
-      `DELETE FROM reviews WHERE review_id = ${req.params.review_id} RETURNING *`
-    )
-    if (!rows.length) {
-      throw new Error(`No reviews found with id ${req.params.review_id}`)
-    }
-    res.json(rows[0])
-  } catch (err) {
-    res.json({ error: err.message })
-  }
-})
+// Route not in use
+// router.delete('/reviews/:review_id', async (req, res) => {
+//   try {
+//     let { rows } = await db.query(
+//       `DELETE FROM reviews WHERE review_id = ${req.params.review_id} RETURNING *`
+//     )
+//     if (!rows.length) {
+//       throw new Error(`No reviews found with id ${req.params.review_id}`)
+//     }
+//     res.json(rows[0])
+//   } catch (err) {
+//     res.json({ error: err.message })
+//   }
+// })
 
 export default router

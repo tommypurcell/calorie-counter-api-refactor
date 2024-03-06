@@ -5,26 +5,26 @@ import jwt from 'jsonwebtoken'
 
 import { jwtSecret } from '../secrets.js'
 
-router.get('/users/:user_id', async (req, res) => {
-  try {
-    const decodedToken = jwt.verify(req.cookies.jwt, jwtSecret)
-    if (!decodedToken) {
-      throw new Error('Invalid authentication token!')
-    }
-    if (decodedToken.user_id !== parseInt(req.params.user_id)) {
-      throw new Error('You are not authorized to view this user!')
-    }
-    let { rows } = await db.query(
-      `SELECT * FROM users WHERE user_id = ${req.params.user_id}`
-    )
-    if (!rows.length) {
-      throw new Error(`No user found with id ${req.params.user_id}`)
-    }
-    res.json(rows[0])
-  } catch (err) {
-    res.json({ error: err.message })
-  }
-})
+// router.get('/users/:user_id', async (req, res) => {
+//   try {
+//     const decodedToken = jwt.verify(req.cookies.jwt, jwtSecret)
+//     if (!decodedToken) {
+//       throw new Error('Invalid authentication token!')
+//     }
+//     if (decodedToken.user_id !== parseInt(req.params.user_id)) {
+//       throw new Error('You are not authorized to view this user!')
+//     }
+//     let { rows } = await db.query(
+//       `SELECT * FROM users WHERE user_id = ${req.params.user_id}`
+//     )
+//     if (!rows.length) {
+//       throw new Error(`No user found with id ${req.params.user_id}`)
+//     }
+//     res.json(rows[0])
+//   } catch (err) {
+//     res.json({ error: err.message })
+//   }
+// })
 
 router.patch('/users/:user_id', async (req, res) => {
   try {
