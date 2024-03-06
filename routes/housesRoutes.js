@@ -7,17 +7,59 @@ import { jwtSecret } from '../secrets.js'
 
 router.post('/houses', async (req, res) => {
   try {
+    // Validate Token
     const decodedToken = jwt.verify(req.cookies.jwt, jwtSecret)
-    if (!decodedToken) {
-      throw new Error('Invalid authentication token!')
+    if (!decodedToken || !decodedToken.user_id || !decodedToken.email) {
+      throw new Error('Invalid authentication token')
     }
-    let { location, rooms, bathrooms, price, description, user_id } = req.body
-    let { rows } = await db.query(`
+    // Validate fields
+    let { location, rooms, bathrooms, price, description, photos } = req.body
+    if (
+      !location ||
+      !rooms ||
+      !bathrooms ||
+      !price ||
+      !description ||
+      !photos
+    ) {
+      throw new Error(
+        'location, rooms, bathrooms, price, descriptions, and photos are required'
+      )
+    }
+    // Validate photos
+    if (!Array.isArray(photos)) {
+      throw new Error('photos must be an array')
+    }
+    if (!photos.length) {
+      throw new Error('photos array cannot be empty')
+    }
+    if (!photos.every((p) => typeof p === 'string' && p.length)) {
+      throw new Error('all photos must be strings and must not be empty')
+    }
+    // Create house
+    let houseCreated = await db.query(`
       INSERT INTO houses (location, rooms, bathrooms, price, description, user_id)
       VALUES ('${location}', '${rooms}', '${bathrooms}', '${price}', '${description}', '${decodedToken.user_id}') 
       RETURNING *
     `)
-    res.json(rows[0])
+    let house = houseCreated.rows[0]
+    // Create photos
+    let photosQuery = 'INSERT INTO houses_photos (house_id, photo) VALUES '
+    photos.forEach((p, i) => {
+      if (i === photos.length - 1) {
+        photosQuery += `(${house.house_id}, '${p}') `
+      } else {
+        photosQuery += `(${house.house_id}, '${p}'), `
+      }
+    })
+    photosQuery += 'RETURNING *'
+    let photosCreated = await db.query(photosQuery)
+    // Compose response
+    house.photo = photosCreated.rows[0].photo
+    house.reviews = 0
+    house.rating = 0
+    // Respond
+    res.json(house)
   } catch (err) {
     res.json({ error: err.message })
   }
