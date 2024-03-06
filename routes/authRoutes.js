@@ -101,7 +101,7 @@ router.post('/login', async (req, res) => {
 router.get('/logout', (req, res) => {
   try {
     res.clearCookie('jwt')
-    res.send('You are logged out')
+    res.json({ message: 'You are logged out' })
   } catch (err) {
     res.json({ error: err.message })
   }
