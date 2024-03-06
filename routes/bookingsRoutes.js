@@ -67,49 +67,52 @@ router.get('/bookings', async (req, res) => {
   }
 })
 
-router.get('/bookings/:booking_id', async (req, res) => {
-  try {
-    const decodedToken = jwt.verify(req.cookies.jwt, jwtSecret)
-    if (!decodedToken) {
-      throw new Error('Invalid authentication token!')
-    }
-    let { rows } = await db.query(
-      `SELECT * FROM bookings WHERE booking_id = ${req.params.booking_id}`
-    )
-    if (rows[0].user_id !== decodedToken.user_id) {
-      throw new Error('You are not authorized to see this booking!')
-    }
-    if (!rows.length) {
-      throw new Error(`No booking found with id ${req.params.user_id}`)
-    }
-    res.json(rows[0])
-  } catch (err) {
-    res.json({ error: err.message })
-  }
-})
+// Route not in use
+// router.get('/bookings/:booking_id', async (req, res) => {
+//   try {
+//     // Validate Token
+//     const decodedToken = jwt.verify(req.cookies.jwt, jwtSecret)
+//     if (!decodedToken || !decodedToken.user_id || !decodedToken.email) {
+//       throw new Error('Invalid authentication token')
+//     }
+//     let { rows } = await db.query(
+//       `SELECT * FROM bookings WHERE booking_id = ${req.params.booking_id}`
+//     )
+//     if (rows[0].user_id !== decodedToken.user_id) {
+//       throw new Error('You are not authorized to see this booking!')
+//     }
+//     if (!rows.length) {
+//       throw new Error(`No booking found with id ${req.params.user_id}`)
+//     }
+//     res.json(rows[0])
+//   } catch (err) {
+//     res.json({ error: err.message })
+//   }
+// })
 
-router.delete('/bookings/:booking_id', async (req, res) => {
-  try {
-    const decodedToken = jwt.verify(req.cookies.jwt, jwtSecret)
-    if (!decodedToken) {
-      throw new Error('Invalid authentication token!')
-    }
-    let { rowsSelect } = await db.query(
-      `SELECT * FROM bookings WHERE booking_id = ${req.params.booking_id}`
-    )
-    if (!rows.length) {
-      throw new Error(`No booking found with id ${req.params.booking_id}`)
-    }
-    if (rowsSelect[0].user_id !== decodedToken.user_id) {
-      throw new Error('You are not authorized to delete this booking!')
-    }
-    let { rows } = await db.query(
-      `DELETE FROM bookings WHERE booking_id = ${req.params.booking_id} RETURNING *`
-    )
-    res.json(rows[0])
-  } catch (err) {
-    res.json({ error: err.message })
-  }
-})
+// Route not in use
+// router.delete('/bookings/:booking_id', async (req, res) => {
+//   try {
+//     const decodedToken = jwt.verify(req.cookies.jwt, jwtSecret)
+//     if (!decodedToken) {
+//       throw new Error('Invalid authentication token!')
+//     }
+//     let { rowsSelect } = await db.query(
+//       `SELECT * FROM bookings WHERE booking_id = ${req.params.booking_id}`
+//     )
+//     if (!rows.length) {
+//       throw new Error(`No booking found with id ${req.params.booking_id}`)
+//     }
+//     if (rowsSelect[0].user_id !== decodedToken.user_id) {
+//       throw new Error('You are not authorized to delete this booking!')
+//     }
+//     let { rows } = await db.query(
+//       `DELETE FROM bookings WHERE booking_id = ${req.params.booking_id} RETURNING *`
+//     )
+//     res.json(rows[0])
+//   } catch (err) {
+//     res.json({ error: err.message })
+//   }
+// })
 
 export default router
