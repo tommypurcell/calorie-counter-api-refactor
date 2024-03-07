@@ -69,7 +69,7 @@ router.get('/houses', async (req, res) => {
   try {
     // build query base
     let sqlquery =
-      'SELECT DISTINCT ON (houses.house_id) houses.*, houses_photos.photo FROM houses'
+      'SELECT * FROM (SELECT DISTINCT ON (houses.house_id) houses.*, houses_photos.photo FROM houses'
     let filters = []
     // add photos
     sqlquery += ` LEFT JOIN houses_photos ON houses.house_id = houses_photos.house_id `
@@ -97,9 +97,12 @@ router.get('/houses', async (req, res) => {
     }
     // array to string divided by AND
     sqlquery += filters.join(' AND ')
+    sqlquery += ') AS distinct_houses'
     // add ORDER BY
-    if (req.query.sort) {
-      sqlquery += ` ORDER BY ${req.query.sort} ${req.query.order || 'ASC'}`
+    if (req.query.sort === 'rooms') {
+      sqlquery += ` ORDER BY rooms DESC`
+    } else {
+      sqlquery += ` ORDER BY price ASC`
     }
     // Run query
     let { rows } = await db.query(sqlquery)
