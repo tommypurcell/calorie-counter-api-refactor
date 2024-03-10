@@ -13,7 +13,7 @@ app.use(express.json())
 app.use(cookieParser())
 
 import authRoutes from './routes/authRoutes.js'
-import foodRoutes from './routes/foodroutes.js'
+import foodRoutes from './routes/foodRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 
 app.use(authRoutes)
