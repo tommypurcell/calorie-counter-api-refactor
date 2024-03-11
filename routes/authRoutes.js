@@ -37,7 +37,12 @@ router.post('/login', async (req, res) => {
         )
 
         // Set token in a HTTP Only Cookie
-        res.cookie('jwt', token)
+        res.cookie('jwt', token, {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'none'
+        })
+
         res.send('Login successful')
       } else {
         // Invalid password
