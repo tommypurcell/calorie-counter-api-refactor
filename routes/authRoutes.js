@@ -32,7 +32,11 @@ router.post('/login', async (req, res) => {
       if (isPasswordValid) {
         // Generate JWT token
         const token = jwt.sign(
-          { user_id: userFound._id, email: userFound.email },
+          {
+            user_id: userFound._id,
+            email: userFound.email,
+            avatar: userFound.avatar
+          },
           jwtSecret
         )
 
