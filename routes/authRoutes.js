@@ -47,7 +47,10 @@ router.post('/login', async (req, res) => {
           sameSite: 'none'
         })
 
-        res.send('Login successful')
+        res.json({
+          token,
+          user: { email: userFound.email, avatar: userFound.avatar }
+        })
       } else {
         // Invalid password
         return res.status(401).send('Invalid password. Please try again.')
