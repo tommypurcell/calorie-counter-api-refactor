@@ -34,6 +34,7 @@ router.post('/login', async (req, res) => {
         const token = jwt.sign(
           {
             user_id: userFound._id,
+            name: userFound.name,
             email: userFound.email,
             avatar: userFound.avatar
           },
@@ -49,7 +50,11 @@ router.post('/login', async (req, res) => {
 
         res.json({
           token,
-          user: { email: userFound.email, avatar: userFound.avatar }
+          user: {
+            email: userFound.email,
+            avatar: userFound.avatar,
+            name: userFound.name
+          }
         })
       } else {
         // Invalid password
