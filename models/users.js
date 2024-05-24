@@ -16,6 +16,9 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true
+    },
+    calorieGoal: {
+      type: Number
     }
     // Removed the duplicated avatar field
   },
