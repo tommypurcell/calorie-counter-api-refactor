@@ -5,6 +5,7 @@ const jwtSecret = process.env.JWT_SECRET
 
 import Foods from '../models/foods.js'
 
+// get all foods in database
 router.get('/allfoods', async (req, res) => {
   try {
     let allFoods = await Foods.find({}).sort({
@@ -59,6 +60,7 @@ router.get('/foods', async (req, res) => {
   }
 })
 
+// add food for logged in user
 router.post('/foods', async (req, res) => {
   if (!req.cookies.jwt) {
     return res.status(401).send('User not logged in')
@@ -78,6 +80,7 @@ router.post('/foods', async (req, res) => {
   res.send(food)
 })
 
+// update food item (normally just calorie value)
 router.patch('/foods', async (req, res) => {
   console.log('body', req.body.id)
   const filter = { _id: req.body.id }
@@ -89,6 +92,7 @@ router.patch('/foods', async (req, res) => {
   res.send(updatedUser)
 })
 
+// delete food item
 router.delete('/foods/:id', async (req, res) => {
   console.log('hello')
   console.log(req.params.id)
