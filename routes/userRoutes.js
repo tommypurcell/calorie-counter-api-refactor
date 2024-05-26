@@ -96,21 +96,21 @@ router.patch('/profile', async (req, res) => {
 })
 
 // delete user
-router.delete('/delete-user/:userId', async (req, res) => {
-  try {
-    const userToDelete = await User.findById(req.params.userId)
-    if (userToDelete) {
-      console.log(userToDelete, 'has been deleted')
-      await User.findByIdAndDelete(userToDelete._id)
-      res.json(`user ${userToDelete.name} has been deleted`)
-    } else {
-      throw new Error(
-        'There is no user matching that Id. Nothing has been deleted.'
-      )
-    }
-  } catch (err) {
-    res.send(err.message)
-  }
-})
+// router.delete('/delete-user/:userId', async (req, res) => {
+//   try {
+//     const userToDelete = await User.findById(req.params.userId)
+//     if (userToDelete) {
+//       console.log(userToDelete, 'has been deleted')
+//       await User.findByIdAndDelete(userToDelete._id)
+//       res.json(`user ${userToDelete.name} has been deleted`)
+//     } else {
+//       throw new Error(
+//         'There is no user matching that Id. Nothing has been deleted.'
+//       )
+//     }
+//   } catch (err) {
+//     res.send(err.message)
+//   }
+// })
 
 export default router
