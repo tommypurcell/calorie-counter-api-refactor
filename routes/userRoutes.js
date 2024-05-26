@@ -1,6 +1,8 @@
 import { Router } from 'express'
-const router = Router()
 import jwt from 'jsonwebtoken'
+
+const router = Router()
+
 const jwtSecret = process.env.JWT_SECRET
 
 import User from '../models/users.js'
