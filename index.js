@@ -1,9 +1,10 @@
-import express from 'express'
-import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import 'dotenv/config'
-const app = express()
+import express from 'express'
 import mongoose from 'mongoose'
+import cookieParser from 'cookie-parser'
+
+const app = express()
 
 // env variables
 const DB_URL = process.env.DB_URL
@@ -28,6 +29,7 @@ mongoose.connect(DB_URL, {
   useUnifiedTopology: true
 })
 
+// Start server
 app.listen(process.env.PORT || 4100, () => {
-  console.log(`Airbnb API ready on ${process.env.PORT || 4100}`)
+  console.log(`Calorie Counter API ready on ${process.env.PORT || 4100}`)
 })

@@ -7,6 +7,7 @@ const jwtSecret = process.env.JWT_SECRET
 
 import User from '../models/users.js'
 
+// get all users
 router.get('/users', async (req, res) => {
   try {
     // Use the decoded token's user ID to find the user
@@ -20,6 +21,7 @@ router.get('/users', async (req, res) => {
   }
 })
 
+// get user profile
 router.get('/profile', async (req, res) => {
   try {
     if (!req.cookies.jwt) {
@@ -52,7 +54,7 @@ router.get('/profile', async (req, res) => {
   }
 })
 
-//  Use router.patch /profile route to update the currently logged in user in the database Then respond with the updated user
+//  Update the currently logged in user in the database and respond with the updated user
 router.patch('/profile', async (req, res) => {
   try {
     console.log('reqbody', req.body)

@@ -1,10 +1,11 @@
 import { Router } from 'express'
-const router = Router()
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-const jwtSecret = process.env.JWT_SECRET
 
 import User from '../models/users.js'
+
+const router = Router()
+const jwtSecret = process.env.JWT_SECRET
 
 // POST /login
 router.post('/login', async (req, res) => {
