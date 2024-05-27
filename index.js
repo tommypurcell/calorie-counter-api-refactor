@@ -12,10 +12,12 @@ app.use(cors({ origin: true, credentials: true }))
 app.use(express.json())
 app.use(cookieParser())
 
+import gptRoutes from './routes/gptRoutes.js'
 import authRoutes from './routes/authRoutes.js'
 import foodRoutes from './routes/foodRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 
+app.use(gptRoutes)
 app.use(authRoutes)
 app.use(foodRoutes)
 app.use(userRoutes)
