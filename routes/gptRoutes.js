@@ -5,7 +5,7 @@ const router = Router()
 
 // Initialize OpenAI client with the API key
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_KEY
+  apiKey: process.env.OPENAI_API_KEY
 })
 
 // Endpoint to fetch nutrition data using GPT
