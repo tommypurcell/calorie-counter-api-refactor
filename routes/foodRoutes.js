@@ -41,9 +41,17 @@ router.get('/foods', async (req, res) => {
       const date = food.date.toISOString().split('T')[0]
 
       if (date !== currentDay) {
+        console.log('currentday', currentDay)
+
         currentDay = date
+        const dateObj = new Date(date) // Get the date object
+        const month = dateObj.toLocaleString('default', { month: 'short' }) // Get short month name (e.g., Jan, Feb)
+        const day = dateObj.getDate() // Get day of the month
+        const year = dateObj.getFullYear() // Get full year
+        // Create formatted date string (e.g., "Jan 06, 2024")
+        const formattedDate = `${month} ${day} ${year}`
         groupedFoods.push({
-          date: currentDay,
+          date: formattedDate,
           foods: [],
           totalCalories: 0
         })
@@ -52,7 +60,7 @@ router.get('/foods', async (req, res) => {
       groupedFoods[groupedFoods.length - 1].foods.push(food)
       groupedFoods[groupedFoods.length - 1].totalCalories += food.calories
     })
-
+    console.log(groupedFoods)
     res.send(groupedFoods)
   } catch (error) {
     console.error('Error fetching foods:', error)
