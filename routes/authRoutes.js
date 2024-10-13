@@ -63,8 +63,10 @@ router.post('/login', async (req, res) => {
       }
     }
   } catch (err) {
-    console.error('Login error', err)
-    res.status(500).send('An error occurred during the login process.')
+    // Invalid password or user does not exist
+    return res.status(401).json({
+      message: 'Invalid email or password. Please try again.'
+    })
   }
 })
 
