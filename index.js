@@ -9,7 +9,14 @@ const app = express()
 // env variables
 const DB_URL = process.env.DB_URL
 
-app.use(cors({ origin: true, credentials: true }))
+// Set up CORS options
+const corsOptions = {
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000', // Use your frontend domain or localhost for dev
+  credentials: true // Allow cookies and other credentials
+}
+
+// Apply CORS middleware
+app.use(cors(corsOptions))
 app.use(express.json())
 app.use(cookieParser())
 
