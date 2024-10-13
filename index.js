@@ -11,8 +11,11 @@ const DB_URL = process.env.DB_URL
 
 // Set up CORS options
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000', // Use your frontend domain or localhost for dev
-  credentials: true // Allow cookies and other credentials
+  origin: [
+    'https://calorie-counter-mcz6.onrender.com',
+    'http://localhost:3000'
+  ], // List of allowed frontend domains
+  credentials: true // Allow cookies and credentials
 }
 
 // Apply CORS middleware
